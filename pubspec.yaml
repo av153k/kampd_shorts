@@ -1,0 +1,35 @@
+name: kampd_shorts
+description: A short videos app build for https://www.kampd.com/ assignment
+version: 1.0.0+1
+publish_to: none
+environment:
+  sdk: '>=2.19.0 <3.0.0'
+dependencies:
+  bloc: ^8.1.1
+  dio: ^5.0.1
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.2
+  flutter_localizations:
+    sdk: flutter
+  intl: ^0.17.0
+  video_player: ^2.5.2
+  dartz: ^0.10.1
+  equatable: ^2.0.5
+  get_it: ^7.2.0
+  connectivity_plus: ^3.0.3
+  internet_connection_checker: ^1.0.0+1
+  http: ^0.13.5
+  shared_preferences: ^2.0.18
+dev_dependencies:
+  bloc_test: ^9.1.1
+  flutter_test:
+    sdk: flutter
+  mocktail: ^0.3.0
+  very_good_analysis: ^4.0.0
+  mockito: ^5.3.2
+  build_runner: ^2.3.3
+  flutter_lints: ^2.0.1
+flutter:
+  uses-material-design: true
+  generate: true
