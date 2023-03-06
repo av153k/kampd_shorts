@@ -19,19 +19,19 @@ mixin _$HomeEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(int currentIndex, int previousIndex) scroll,
+    required TResult Function(int currentIndex) scroll,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(int currentIndex, int previousIndex)? scroll,
+    TResult? Function(int currentIndex)? scroll,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(int currentIndex, int previousIndex)? scroll,
+    TResult Function(int currentIndex)? scroll,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -112,7 +112,7 @@ class _$InitialEvent implements InitialEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(int currentIndex, int previousIndex) scroll,
+    required TResult Function(int currentIndex) scroll,
   }) {
     return init();
   }
@@ -121,7 +121,7 @@ class _$InitialEvent implements InitialEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(int currentIndex, int previousIndex)? scroll,
+    TResult? Function(int currentIndex)? scroll,
   }) {
     return init?.call();
   }
@@ -130,7 +130,7 @@ class _$InitialEvent implements InitialEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(int currentIndex, int previousIndex)? scroll,
+    TResult Function(int currentIndex)? scroll,
     required TResult orElse(),
   }) {
     if (init != null) {
@@ -181,7 +181,7 @@ abstract class _$$ScrollEventCopyWith<$Res> {
           _$ScrollEvent value, $Res Function(_$ScrollEvent) then) =
       __$$ScrollEventCopyWithImpl<$Res>;
   @useResult
-  $Res call({int currentIndex, int previousIndex});
+  $Res call({int currentIndex});
 }
 
 /// @nodoc
@@ -196,16 +196,11 @@ class __$$ScrollEventCopyWithImpl<$Res>
   @override
   $Res call({
     Object? currentIndex = null,
-    Object? previousIndex = null,
   }) {
     return _then(_$ScrollEvent(
       null == currentIndex
           ? _value.currentIndex
           : currentIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      null == previousIndex
-          ? _value.previousIndex
-          : previousIndex // ignore: cast_nullable_to_non_nullable
               as int,
     ));
   }
@@ -214,16 +209,14 @@ class __$$ScrollEventCopyWithImpl<$Res>
 /// @nodoc
 
 class _$ScrollEvent implements ScrollEvent {
-  const _$ScrollEvent(this.currentIndex, this.previousIndex);
+  const _$ScrollEvent(this.currentIndex);
 
   @override
   final int currentIndex;
-  @override
-  final int previousIndex;
 
   @override
   String toString() {
-    return 'HomeEvent.scroll(currentIndex: $currentIndex, previousIndex: $previousIndex)';
+    return 'HomeEvent.scroll(currentIndex: $currentIndex)';
   }
 
   @override
@@ -232,13 +225,11 @@ class _$ScrollEvent implements ScrollEvent {
         (other.runtimeType == runtimeType &&
             other is _$ScrollEvent &&
             (identical(other.currentIndex, currentIndex) ||
-                other.currentIndex == currentIndex) &&
-            (identical(other.previousIndex, previousIndex) ||
-                other.previousIndex == previousIndex));
+                other.currentIndex == currentIndex));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, currentIndex, previousIndex);
+  int get hashCode => Object.hash(runtimeType, currentIndex);
 
   @JsonKey(ignore: true)
   @override
@@ -250,29 +241,29 @@ class _$ScrollEvent implements ScrollEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() init,
-    required TResult Function(int currentIndex, int previousIndex) scroll,
+    required TResult Function(int currentIndex) scroll,
   }) {
-    return scroll(currentIndex, previousIndex);
+    return scroll(currentIndex);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? init,
-    TResult? Function(int currentIndex, int previousIndex)? scroll,
+    TResult? Function(int currentIndex)? scroll,
   }) {
-    return scroll?.call(currentIndex, previousIndex);
+    return scroll?.call(currentIndex);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? init,
-    TResult Function(int currentIndex, int previousIndex)? scroll,
+    TResult Function(int currentIndex)? scroll,
     required TResult orElse(),
   }) {
     if (scroll != null) {
-      return scroll(currentIndex, previousIndex);
+      return scroll(currentIndex);
     }
     return orElse();
   }
@@ -310,11 +301,9 @@ class _$ScrollEvent implements ScrollEvent {
 }
 
 abstract class ScrollEvent implements HomeEvent {
-  const factory ScrollEvent(final int currentIndex, final int previousIndex) =
-      _$ScrollEvent;
+  const factory ScrollEvent(final int currentIndex) = _$ScrollEvent;
 
   int get currentIndex;
-  int get previousIndex;
   @JsonKey(ignore: true)
   _$$ScrollEventCopyWith<_$ScrollEvent> get copyWith =>
       throw _privateConstructorUsedError;

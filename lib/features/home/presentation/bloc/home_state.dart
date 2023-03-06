@@ -14,6 +14,6 @@ class HomeState with _$HomeState {
         videos: [],
         controllers: {},
         currentPlayingIndex: 0,
-        isLoading: false,
+        isLoading: true,
       );
 }

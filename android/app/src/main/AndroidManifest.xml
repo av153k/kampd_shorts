@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.verygoodcore.kampd_shorts">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="kampd_shorts"
         android:name="${applicationName}"

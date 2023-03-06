@@ -12,68 +12,130 @@ part 'home_state.dart';
 
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(this._videosRepository) : super(HomeState.initial()) {
-    on<HomeEvent>(_eventMapper);
+    on<HomeEvent>(
+      (event, emit) async => await _eventToStateMapper(event, emit),
+    );
   }
-  final VideosRepository _videosRepository;
 
   Map<VideoModel, VideoPlayerController> controllers = {};
 
-  Future<void> _loadVideos(Emitter<HomeState> emit) async {
-    emit(state.copyWith(isLoading: true));
-    try {
-      final result = await _videosRepository.getVideos();
-      result.fold(
-        (error) => emit(
-          state.copyWith(
-            error: error,
-            isLoading: false,
-          ),
-        ),
-        (videos) {
-          emit(
-            state.copyWith(
-              currentPlayingIndex: 0,
-              videos: videos,
-            ),
-          );
-        },
-      );
-    } catch (e) {
-      emit(
-        state.copyWith(
-          error: e,
-          isLoading: false,
-        ),
-      );
-    }
-  }
+  final VideosRepository _videosRepository;
 
-  Future<void> _handleOnScroll(
-    int currentIndex,
-    int previousIndex,
+  FutureOr<void> _eventToStateMapper(
+    HomeEvent event,
     Emitter<HomeState> emit,
-  ) async {}
-
-  FutureOr<void> _eventMapper(HomeEvent event, Emitter<HomeState> emit) {
-    event.map(
-      init: (_) {
-        _loadVideos(emit);
+  ) async {
+    await event.map(
+      init: (_) async {
+        await _loadVideos(emit);
       },
-      scroll: (ScrollEvent scrollEvent) {
-        _handleOnScroll(
+      scroll: (ScrollEvent scrollEvent) async {
+        await _handleOnScroll(
           scrollEvent.currentIndex,
-          scrollEvent.previousIndex,
           emit,
         );
       },
     );
   }
 
-  _playAtIndex(int index) {}
+  Future<void> _loadVideos(Emitter<HomeState> emit) async {
+    emit(state.copyWith(isLoading: true));
+    final result = await _videosRepository.getVideos();
+    await result.fold(
+      (error) async => emit(
+        state.copyWith(
+          error: error,
+          isLoading: false,
+        ),
+      ),
+      (videos) async {
+        state.videos.addAll(videos);
+        await _initializeAtIndex(0);
+        await _playAtIndex(0);
+        await _initializeAtIndex(1);
+        emit(
+          state.copyWith(
+            isLoading: false,
+            currentPlayingIndex: 0,
+          ),
+        );
+      },
+    );
+  }
 
-  _stopAtIndex(int index) {}
+  Future<void> _handleOnScroll(
+    int currentIndex,
+    Emitter<HomeState> emit,
+  ) async {
+    if (currentIndex > state.currentPlayingIndex) {
+      await _playNextVideo(currentIndex);
+    } else {
+      await _playPreviousVideo(currentIndex);
+    }
+    emit(state.copyWith(currentPlayingIndex: currentIndex));
+  }
 
-  _disposeAtIndex(int index) {}
+  Future<void> _playNextVideo(int index) async {
+    /// Stop previous video
+    await _stopAtIndex(index - 1);
 
-  _initializeAtIndex(int index) {}
+    /// Dispose the in cache video
+    await _disposeAtIndex(index - 2);
+
+    /// Play current video (already initialized)
+    await _playAtIndex(index);
+
+    /// Initialize next controller
+    await _initializeAtIndex(index + 1);
+  }
+
+  Future<void> _playPreviousVideo(int index) async {
+    /// Stop next video
+    await _stopAtIndex(index - 1);
+
+    /// Dispose next in cache video
+    await _disposeAtIndex(index + 2);
+
+    /// Play current video (already initialized)
+    await _playAtIndex(index);
+
+    /// Initialize previous video
+    await _initializeAtIndex(index - 1);
+  }
+
+  Future<void> _playAtIndex(int index) async {
+    if (state.videos.length > index && index >= 0) {
+      final controller = state.controllers[state.videos[index]];
+      await controller?.play();
+    }
+  }
+
+  Future<void> _stopAtIndex(int index) async {
+    if (state.videos.length > index && index >= 0) {
+      final controller = state.controllers[state.videos[index]];
+      await controller?.pause();
+
+      await controller?.seekTo(Duration.zero);
+    }
+  }
+
+  Future<void> _disposeAtIndex(int index) async {
+    if (state.videos.length > index && index >= 0) {
+      final controller = state.controllers[state.videos[index]];
+      await controller?.dispose();
+
+      if (controller != null) {
+        state.controllers.remove(state.videos[index]);
+      }
+    }
+  }
+
+  Future<void> _initializeAtIndex(int index) async {
+    if (state.videos.length > index && index >= 0) {
+      final controller =
+          VideoPlayerController.network(state.videos[index].url ?? '');
+      state.controllers[state.videos[index]] = controller;
+      await controller.initialize();
+    }
+  }
 }
