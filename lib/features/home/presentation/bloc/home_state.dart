@@ -1,12 +1,19 @@
 part of 'home_bloc.dart';
 
-abstract class HomeState extends Equatable {
-  const HomeState();
+@Freezed(makeCollectionsUnmodifiable: false)
+class HomeState with _$HomeState {
+  factory HomeState({
+    required List<VideoModel> videos,
+    required Map<VideoModel, VideoPlayerController> controllers,
+    required int currentPlayingIndex,
+    required bool isLoading,
+    Object? error,
+  }) = _HomeState;
 
-  @override
-  List<Object> get props => [];
+  factory HomeState.initial() => HomeState(
+        videos: [],
+        controllers: {},
+        currentPlayingIndex: 0,
+        isLoading: false,
+      );
 }
-
-class HomeInitial extends HomeState {}
-
-class HomeReady extends HomeState {}
