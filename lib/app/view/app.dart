@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kampd_shorts/dependency_injection.dart';
 import 'package:kampd_shorts/features/home/home.dart';
 import 'package:kampd_shorts/features/home/presentation/pages/home_page.dart';
-import 'package:kampd_shorts/l10n/l10n.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -19,8 +18,6 @@ class App extends StatelessWidget {
             accentColor: const Color(0xFF13B9FF),
           ),
         ),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
         home: const HomePage(),
       ),
     );
